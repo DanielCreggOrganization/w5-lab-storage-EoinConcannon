@@ -39,6 +39,9 @@ export class HomePage {
     }
   }
 
+  //Ionic storage github
+  //https://github.com/ionic-team/ionic-storage
+
   async remove() {
     try {
       await this.storage.remove(this.key);
