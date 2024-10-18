@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Storage } from '@ionic/storage-angular';
+import { StorageService } from '../services/storage.service';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 
@@ -15,13 +15,11 @@ export class HomePage {
   value: string = '';
   output: string = '';
 
-  constructor(private storage: Storage) {
-    storage.create();
-  }
+  constructor(private storageService: StorageService) {}
 
   async setItem() {
     try {
-      await this.storage.set(this.key, this.value);
+      await this.storageService.set(this.key, this.value);
       this.output = `Set ${this.key}: ${this.value}`;
     } catch (error) {
       console.error('Error setting item', error);
@@ -31,20 +29,20 @@ export class HomePage {
 
   async getItem() {
     try {
-      const value = await this.storage.get(this.key);
+      const value = await this.storageService.get(this.key);
       this.output = `Get ${this.key}: ${value}`;
     } catch (error) {
       console.error('Error getting item', error);
       this.output = `Error getting item: ${error}`;
     }
   }
-
+  
   //Ionic storage github
   //https://github.com/ionic-team/ionic-storage
 
   async remove() {
     try {
-      await this.storage.remove(this.key);
+      await this.storageService.remove(this.key);
       this.output = `Removed ${this.key}`;
     } catch (error) {
       console.error('Error removing item', error);
@@ -54,7 +52,7 @@ export class HomePage {
 
   async clear() {
     try {
-      await this.storage.clear();
+      await this.storageService.clear();
       this.output = 'Storage cleared';
     } catch (error) {
       console.error('Error clearing storage', error);
@@ -64,7 +62,7 @@ export class HomePage {
 
   async keys() {
     try {
-      const keys = await this.storage.keys();
+      const keys = await this.storageService.keys();
       this.output = `Keys: ${keys.join(', ')}`;
     } catch (error) {
       console.error('Error getting keys', error);
@@ -74,7 +72,7 @@ export class HomePage {
 
   async length() {
     try {
-      const length = await this.storage.length();
+      const length = await this.storageService.length();
       this.output = `Length: ${length}`;
     } catch (error) {
       console.error('Error getting length', error);
@@ -85,13 +83,23 @@ export class HomePage {
   async forEach() {
     try {
       let result = '';
-      await this.storage.forEach((value, key, index) => {
+      await this.storageService.forEach((value, key, index) => {
         result += `${index}: ${key} = ${value}\n`;
       });
       this.output = `ForEach:\n${result}`;
     } catch (error) {
       console.error('Error in forEach', error);
       this.output = `Error in forEach: ${error}`;
+    }
+  }
+
+  async exists() {
+    try {
+      const exists = await this.storageService.get(this.key) !== null;
+      this.output = `Exists ${this.key}: ${exists}`;
+    } catch (error) {
+      console.error('Error checking existence', error);
+      this.output = `Error checking existence: ${error}`;
     }
   }
 }

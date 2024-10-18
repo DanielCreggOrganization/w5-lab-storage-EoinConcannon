@@ -5,17 +5,22 @@ import { Storage } from '@ionic/storage-angular';
   providedIn: 'root',
 })
 export class StorageService {
-  private storage = Inject(Storage);
+  //private storage = Inject(Storage);
   
-  constructor() {
+  constructor(private storage: Storage) {
     this.init();
   }
 
   async init() {
-    await this.storage.create();
+    try {
+      await this.storage.create();
+    } catch (error) {
+      console.error('Error initializing storage:', error);
+      throw error;
+    }
   }
 
-  // Storage methods with error handling
+  // Storage methods with    handling
   public async set(key: string, value: any) {
     try {
       await this.storage.set(key, value);
